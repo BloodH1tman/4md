@@ -4,9 +4,9 @@ secret:
   enabled: true
 cm:
   enabled: true
-haproxy-ingress:
+haproxy-ingress-helm:
   enabled: true
-postgresql-ha:
+postgresql-ha-helm:
   enabled: true
 
 global:
@@ -23,6 +23,25 @@ global:
   ingress:
     host: pgadmin.dev.domain.com
     secretname: dev.domain.com-secret
+
+  readinessProbe:
+    initialDelaySeconds: 40
+    periodSeconds: 10
+    httpGet:
+      path: "/"
+      port: 80
+      httpHeaders:
+      - name: "Custom-Header"
+        value: "English"
+  livenessProbe:
+    initialDelaySeconds: 40
+    periodSeconds: 10
+    httpGet:
+      path: "/"
+      port: 80
+      httpHeaders:
+      - name: "Custom-Header"
+        value: "English"
 
 haproxy-ingress:
   controller:

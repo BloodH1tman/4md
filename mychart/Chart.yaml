@@ -18,8 +18,8 @@ dependencies:
 - name: haproxy-ingress
   version: "0.13.9"
   repository: https://haproxy-ingress.github.io/charts
-  condition: haproxy-ingress.enabled
+  condition: haproxy-ingress-helm.enabled
 - name: postgresql-ha
   version: "9.3.5"
   repository: https://charts.bitnami.com/bitnami
-  condition: postgresql-ha.enabled
+  condition: postgresql-ha-helm.enabled

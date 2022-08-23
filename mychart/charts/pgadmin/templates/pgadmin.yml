@@ -28,6 +28,10 @@ spec:
         ports:
         - containerPort: 80
           protocol: TCP
+        readinessProbe:
+          {{- toYaml .Values.global.readinessProbe | nindent 10 }}
+        livenessProbe:
+          {{- toYaml .Values.global.livenessProbe | nindent 10 }}
 
 ---
 apiVersion: v1
