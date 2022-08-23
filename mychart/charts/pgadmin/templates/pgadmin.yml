@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: pgadmin
+    project: md
+  name: pgadmin-deploy-{{ .Values.global.metadata.env }}
+  namespace: {{ .Values.global.metadata.namespace }}
+spec:
+  replicas: {{ .Values.global.replicas }}
+  selector:
+    matchLabels:
+      app: pgadmin
+  template:
+    metadata:
+      labels:
+        app: pgadmin
+    spec:
+      containers:
+      - envFrom:
+        - configMapRef:
+            name: cm-pgadmin
+        - secretRef:
+            name: secret-pgadmin
+        image: {{ .Values.global.containers.image.pgadmin }}
+        imagePullPolicy: Always
+        name: pgadmin
+        ports:
+        - containerPort: 80
+          protocol: TCP
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: pgadmin
+    project: md
+  name: pgadmin-svc-{{ .Values.global.metadata.env }}
+  namespace: {{ .Values.global.metadata.namespace }}
+spec:
+  ports:
+  - name: tcp
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: pgadmin
+  type: ClusterIP
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: haproxy
+  labels:
+    app: pgadmin
+    project: md
+  name: pgadmin-{{ .Values.global.metadata.env }}
+  namespace: {{ .Values.global.metadata.namespace }}
+spec:
+  rules:
+  - host: {{ .Values.global.ingress.host }}
+    http:
+      paths:
+      - backend:
+          service:
+            name: pgadmin-svc-{{ .Values.global.metadata.env }}
+            port:
+              number: 80
+        path: /
+        pathType: ImplementationSpecific
+  tls:
+  - hosts:
+    - {{ .Values.global.ingress.host }}
+    secretName: {{ .Values.global.ingress.secretname }}

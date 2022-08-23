@@ -1,0 +1,36 @@
+pgadmin:
+  enabled: true
+secret:
+  enabled: true
+cm:
+  enabled: true
+haproxy-ingress:
+  enabled: true
+postgresql-ha:
+  enabled: true
+
+global:
+  metadata:
+    namespace: md
+    env: dev
+  
+  replicas: 2
+
+  containers:
+    image:
+      pgadmin: dpage/pgadmin4:6.12
+
+  ingress:
+    host: pgadmin.dev.domain.com
+    secretname: dev.domain.com-secret
+
+haproxy-ingress:
+  controller:
+    service:
+      type: LoadBalancer
+    replicaCount: 2
+    tcp: {5432: "{{ .Release.Namespace }}/{{ .Release.Name }}-postgresql-ha-pgpool:5432"}
+
+postgresql-ha:
+  persistence:
+    enabled: false

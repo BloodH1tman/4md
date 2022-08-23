@@ -1,0 +1,25 @@
+apiVersion: v2
+name: 4md
+version: "1.0.0"
+
+dependencies:
+- name: pgadmin
+  version: "1.0.0"
+  repository: file://charts/pgadmin
+  condition: pgadmin.enabled
+- name: cm-pgadmin
+  version: "1.0.0"
+  repository: file://charts/cm
+  condition: cm.enabled
+- name: secret-pgadmin
+  version: "1.0.0"
+  repository: file://charts/secret
+  condition: secret.enabled
+- name: haproxy-ingress
+  version: "0.13.9"
+  repository: https://haproxy-ingress.github.io/charts
+  condition: haproxy-ingress.enabled
+- name: postgresql-ha
+  version: "9.3.5"
+  repository: https://charts.bitnami.com/bitnami
+  condition: postgresql-ha.enabled
